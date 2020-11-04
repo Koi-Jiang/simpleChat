@@ -80,7 +80,6 @@ public class ClientConsole implements ChatIF
   {
     try
     {
-
       String message;
 
       while (true) 
@@ -116,7 +115,7 @@ public class ClientConsole implements ChatIF
    * @param args[0] The host to connect to.
    */
   public static void main(String[] args) 
-  {
+  { 
     String host = "";
     int port = 0; //Port to listen on
 
