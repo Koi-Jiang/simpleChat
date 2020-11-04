@@ -25,8 +25,8 @@ public class ChatClient extends AbstractClient
    * The interface type variable.  It allows the implementation of 
    * the display method in the client.
    */
-  ChatIF clientUI; 
-
+	ChatIF clientUI;
+	int loginID;
   
   //Constructors ****************************************************
   
@@ -38,14 +38,15 @@ public class ChatClient extends AbstractClient
    * @param clientUI The interface type variable.
    */
   
-  public ChatClient(String host, int port, ChatIF clientUI) 
+  public ChatClient(int loginID, String host, int port, ChatIF clientUI) 
     throws IOException 
   {
     super(host, port); //Call the superclass constructor
-    this.clientUI = clientUI;
-    openConnection();
+		this.clientUI = clientUI;
+		this.loginID = loginID;
+		openConnection();
+		sendToServer("#login " + loginID);
   }
-
   
   //Instance methods ************************************************
     
@@ -99,7 +100,7 @@ public class ChatClient extends AbstractClient
             setPort(Integer.parseInt(mes[1]));
             clientUI.display("Port has been set to " + getPort() + ".");
             break;
-          case "#login":
+					case "#login":
             if(isConnected())
             {
               clientUI.display("Client should disconnect first.");
@@ -113,9 +114,19 @@ public class ChatClient extends AbstractClient
             break;
           case "#getport":
             clientUI.display(getPort() + ".");
-            break;       
-          default:
-            clientUI.display("Command is incorrect.");
+						break;
+					default:
+						if (mes[0].startsWith("#login")) //diffent with command "#login"
+						{
+							try {
+								sendToServer(message);
+							} catch (IOException e) {
+								clientUI.display("Could not send message to server.  Terminating client.");
+								quit();
+							}
+						}
+						else
+            	clientUI.display("Command is incorrect.");
             break;
         }
       }catch (Exception e) 

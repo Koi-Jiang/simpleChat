@@ -45,11 +45,41 @@ public class EchoServer extends AbstractServer
    * @param msg The message received from the client.
    * @param client The connection from which the message originated.
    */
-  public void handleMessageFromClient
-    (Object msg, ConnectionToClient client)
+  public void handleMessageFromClient(Object msg, ConnectionToClient client)
   {
-    System.out.println("Message received: " + msg + " from " + client);
-    this.sendToAllClients(msg);
+    Object ID = client.getInfo("ID");
+    String mes = msg.toString().trim();
+    if (mes.startsWith("#login"))
+    {
+      if (ID == null) //first line is #login+ID
+      {
+        int loginID = Integer.parseInt(mes.replace("#login", "").trim());
+        client.setInfo("ID", loginID);
+      } 
+      else //other line is #login+ID
+      {
+        try 
+        {
+          client.sendToClient("You are not allowed to send ID again.");
+          client.close();
+        } catch (Exception e) {}
+      }
+    }
+    else 
+    {
+      if (ID == null) //first line is not #login+ID
+      {
+        try {
+          client.sendToClient("Your need your loginID to get connection.");
+          client.close();
+        } catch (Exception e) {}
+      }
+      else  //everything going well
+      {
+        System.out.println("Message received: " + msg + " from " + client + "whose loginID is " + ID);
+        this.sendToAllClients("loginID: " + ID + " > " + msg);
+      }
+    }    
   }
     
   /**
