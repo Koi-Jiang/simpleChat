@@ -85,25 +85,30 @@ public class EchoServer extends AbstractServer
   {
     int port = 0; //Port to listen on
 
-    try
-    {
+    try {
       port = Integer.parseInt(args[0]); //Get port from command line
-    }
-    catch(Throwable t)
-    {
+    } catch (Throwable t) {
       port = DEFAULT_PORT; //Set port to 5555
     }
-	
+
     EchoServer sv = new EchoServer(port);
-    
-    try 
-    {
+
+    try {
       sv.listen(); //Start listening for connections
-    } 
-    catch (Exception ex) 
-    {
+    } catch (Exception ex) {
       System.out.println("ERROR - Could not listen for clients!");
     }
   }
+
+  public void clientConnected(ConnectionToClient client) 
+  {
+    System.out.println("A client has connected.");
+  }
+
+  public void clientException(ConnectionToClient client, Throwable exception)
+  {
+    System.out.println("A client has disconnectted.");
+  }
+
 }
 //End of EchoServer class

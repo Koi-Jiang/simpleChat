@@ -81,7 +81,8 @@ public abstract class AbstractClient implements Runnable {
 	 * @param port
 	 *            the port number.
 	 */
-	public AbstractClient(String host, int port) {
+	public AbstractClient(String host, int port) 
+	{
 		// Initialize variables
 		this.host = host;
 		this.port = port;
@@ -96,13 +97,15 @@ public abstract class AbstractClient implements Runnable {
 	 * @exception IOException
 	 *                if an I/O error occurs when opening.
 	 */
-	final public void openConnection() throws IOException {
+	final public void openConnection() throws IOException 
+	{
 		// Do not do anything if the connection is already open
 		if (isConnected())
 			return;
 
 		// Create the sockets and the data streams
-		try {
+		try 
+		{
 			clientSocket = new Socket(host, port);
 			output = new ObjectOutputStream(clientSocket.getOutputStream());
 			input = new ObjectInputStream(clientSocket.getInputStream());
@@ -110,11 +113,10 @@ public abstract class AbstractClient implements Runnable {
 		// All three of the above must be closed when there is a failure
 		// to create any of them
 		{
-			try {
+			try 
+			{
 				closeAll();
-			} catch (Exception exc) {
-			}
-
+			} catch (Exception exc) {}
 			throw ex; // Rethrow the exception.
 		}
 
@@ -132,10 +134,10 @@ public abstract class AbstractClient implements Runnable {
 	 * @exception IOException
 	 *                if an I/O error occurs when sending
 	 */
-	final public void sendToServer(Object msg) throws IOException {
+	final public void sendToServer(Object msg) throws IOException 
+	{
 		if (clientSocket == null || output == null)
 			throw new SocketException("socket does not exist");
-
 		output.writeObject(msg);
 	}
 
@@ -144,7 +146,8 @@ public abstract class AbstractClient implements Runnable {
 	 * buffer repeatedly. This would not normally be used, but is necessary
     * in some circumstances when Java refuses to send data that it thinks has been sent.
 	 */
-	final public void forceResetAfterSend() throws IOException {
+	final public void forceResetAfterSend() throws IOException 
+	{
       output.reset();
 	}
 
@@ -154,13 +157,15 @@ public abstract class AbstractClient implements Runnable {
 	 * @exception IOException
 	 *                if an I/O error occurs when closing.
 	 */
-	final public void closeConnection() throws IOException {
+	final public void closeConnection() throws IOException 
+	{
 		// Prevent the thread from looping any more
 		readyToStop = true;
-
-		try {
+		try 
+		{
 			closeAll();
-		} finally {
+		} finally 
+		{
 			// Call the hook method
 			connectionClosed();
 		}
@@ -171,14 +176,16 @@ public abstract class AbstractClient implements Runnable {
 	/**
 	 * @return true if the client is connnected.
 	 */
-	final public boolean isConnected() {
+	final public boolean isConnected() 
+	{
 		return clientReader != null && clientReader.isAlive();
 	}
 
 	/**
 	 * @return the port number.
 	 */
-	final public int getPort() {
+	final public int getPort() 
+	{
 		return port;
 	}
 
@@ -189,14 +196,16 @@ public abstract class AbstractClient implements Runnable {
 	 * @param port
 	 *            the port number.
 	 */
-	final public void setPort(int port) {
+	final public void setPort(int port) 
+	{
 		this.port = port;
 	}
 
 	/**
 	 * @return the host name.
 	 */
-	final public String getHost() {
+	final public String getHost() 
+	{
 		return host;
 	}
 
@@ -207,7 +216,8 @@ public abstract class AbstractClient implements Runnable {
 	 * @param host
 	 *            the host name.
 	 */
-	final public void setHost(String host) {
+	final public void setHost(String host) 
+	{
 		this.host = host;
 	}
 
@@ -216,7 +226,8 @@ public abstract class AbstractClient implements Runnable {
 	 * 
 	 * @return the client's Inet address.
 	 */
-	final public InetAddress getInetAddress() {
+	final public InetAddress getInetAddress() 
+	{
 		return clientSocket.getInetAddress();
 	}
 
@@ -226,7 +237,8 @@ public abstract class AbstractClient implements Runnable {
 	 * Waits for messages from the server. When each arrives, a call is made to
 	 * <code>handleMessageFromServer()</code>. Not to be explicitly called.
 	 */
-	final public void run() {
+	final public void run() 
+	{
 		connectionEstablished();
 
 		// The message from the server
@@ -234,8 +246,10 @@ public abstract class AbstractClient implements Runnable {
 
 		// Loop waiting for data
 
-		try {
-			while (!readyToStop) {
+		try 
+		{
+			while (!readyToStop) 
+			{
 				// Get data from Server and send it to the handler
 				// The thread waits indefinitely at the following
 				// statement until something is received from the server
@@ -245,16 +259,19 @@ public abstract class AbstractClient implements Runnable {
 				// msg by implementing the following method
 				handleMessageFromServer(msg);
 			}
-		} catch (Exception exception) {
-			if (!readyToStop) {
-				try {
+		} catch (Exception exception) 
+		{
+			if (!readyToStop) 
+			{
+				try 
+				{
 					closeAll();
-				} catch (Exception ex) {
-				}
+				} catch (Exception ex) {}
 
 				connectionException(exception);
 			}
-		} finally {
+		} finally 
+		{
 			clientReader = null;
 		}
 	}
@@ -267,7 +284,8 @@ public abstract class AbstractClient implements Runnable {
 	 * perform special processing such as cleaning up and terminating, or
 	 * attempting to reconnect.
 	 */
-	protected void connectionClosed() {
+	protected void connectionClosed() 
+	{		
 	}
 
 	/**
@@ -278,7 +296,8 @@ public abstract class AbstractClient implements Runnable {
 	 * @param exception
 	 *            the exception raised.
 	 */
-	protected void connectionException(Exception exception) {
+	protected void connectionException(Exception exception) 
+	{
 	}
 
 	/**
@@ -306,7 +325,8 @@ public abstract class AbstractClient implements Runnable {
 	 * @exception IOException
 	 *                if an I/O error occurs when closing.
 	 */
-	private void closeAll() throws IOException {
+	private void closeAll() throws IOException 
+	{
 		try {
 			// Close the socket
 			if (clientSocket != null)
