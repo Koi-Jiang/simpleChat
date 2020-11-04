@@ -126,7 +126,7 @@ public class EchoServer extends AbstractServer
     try {
       sv.listen(); //Start listening for connections
     } catch (Exception ex) {
-      System.out.println("ERROR - Could not listen for clients!");
+      System.out.println("The loginID is incorrect.");
     }
     serverConsole.accept();
   }

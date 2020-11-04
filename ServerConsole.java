@@ -112,6 +112,7 @@ public class ServerConsole implements ChatIF
             try
             {
                 echoServer.sendToAllClients("SERVER MSG> " + message);
+                display(message);
             }
             catch(Exception e)
             {
